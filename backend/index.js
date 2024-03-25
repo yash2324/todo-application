@@ -54,3 +54,20 @@ app.put("/completed", async (req, res) => {
     message: "marked as completed",
   });
 });
+
+app.delete("/delete", async (req, res) => {
+  const deletedData = req.body;
+  const parsedData = updateTodo.safeParse(deletedData);
+  if (!parsedData.success) {
+    res.status(411).json({
+      message: "You sent the wrong input",
+    });
+    return;
+  }
+  await todo.deleteOne({
+    _id: req.body.id,
+  });
+  res.json({
+    message: "todo has been deleted",
+  });
+});
