@@ -1,24 +1,51 @@
 import React from "react";
+import { useState } from "react";
 
 export default function CreateTodo() {
-  async function onClickHandler({ title, desc }) {
-    const send = await fetch("http://localhost:3000/todo", {
-      method: "POST",
-      body: {
-        title: title,
-        description: desc,
-      },
-    });
-  }
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/todo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: title, description: desc }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create todo");
+      }
+
+      setTitle("");
+      setDesc("");
+    } catch (error) {
+      console.error("Error creating todo:", error);
+    }
+  };
+
   return (
-    <div>
-      <input type="text" id="title" placeholder="Title" />
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        id="title"
+        placeholder="Title"
+        onChange={(e) => setTitle(e.target.value)}
+      />
       <br />
-      <input type="text" id="desc" placeholder="Description" />
+      <input
+        type="text"
+        id="desc"
+        placeholder="Description"
+        onChange={(e) => {
+          setDesc(e.target.value);
+        }}
+      />
       <br />
-      <button onClick={(title, desc) => onClickHandler(title, desc)}>
-        Add a Todo
-      </button>
-    </div>
+      <button type="submit">Add a Todo</button>
+    </form>
   );
 }

@@ -5,12 +5,12 @@ function App() {
   const [todos, setTodos] = useState([]);
   useEffect(() => {
     getTodos();
-  }, []);
+  });
   async function getTodos() {
     const data = await fetch("http://localhost:3000/todos");
 
     const response = await data.json();
-    console.log(response);
+
     setTodos(response.todos);
   }
 
